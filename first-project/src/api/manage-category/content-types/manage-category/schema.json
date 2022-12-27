@@ -19,9 +19,6 @@
     "ActionId": {
       "type": "integer"
     },
-    "OrderId": {
-      "type": "string"
-    },
     "Logo": {
       "type": "media",
       "multiple": false,
@@ -30,16 +27,19 @@
         "images"
       ]
     },
-    "manage_app": {
-      "type": "relation",
-      "relation": "oneToOne",
-      "target": "api::manage-app.manage-app"
-    },
     "Status": {
       "type": "boolean",
       "default": true
     },
     "TotalVideo": {
+      "type": "integer"
+    },
+    "AppId": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::manage-app.manage-app"
+    },
+    "OrderId": {
       "type": "integer"
     }
   }

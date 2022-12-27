@@ -17,8 +17,9 @@
       "default": 0
     },
     "UserName": {
-      "type": "string",
-      "required": true
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "plugin::users-permissions.user"
     }
   }
 }
