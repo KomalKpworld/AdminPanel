@@ -12,7 +12,7 @@
   },
   "pluginOptions": {},
   "attributes": {
-    "appName": {
+    "AppName": {
       "type": "string"
     },
     "Logo": {
