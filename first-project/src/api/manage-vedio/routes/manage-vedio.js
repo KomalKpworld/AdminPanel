@@ -15,6 +15,12 @@ module.exports = {
         handler: 'manage-vedio.create',
         policies: []
       },
+      { // Path defined with an URL parameter
+        method: 'POST',
+        path: '/manage-vedio/Get', 
+        handler: 'manage-vedio.findByDate',
+        policies: []
+      },
       { // Path defined with a regular expression
         method: 'GET',
         path: '/manage-vedio', 
@@ -40,6 +46,12 @@ module.exports = {
         handler: 'manage-vedio.delete',
         policies: []
       },
+      { // Path defined with an URL parameter
+        method: 'GET',
+        path: '/commonVedio',
+        handler: 'manage-vedio.findMany',
+        policies: []
+    },
     ]
   }
   

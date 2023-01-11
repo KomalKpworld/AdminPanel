@@ -8,7 +8,14 @@
     "description": ""
   },
   "options": {
-    "draftAndPublish": true
+    "draftAndPublish": true,
+    "populateCreatorFields": true,
+    "privateAttributes": [
+      "updatedAt",
+      "publishedAt",
+      "createdBy",
+      "updatedBy"
+    ]
   },
   "pluginOptions": {},
   "attributes": {
@@ -29,6 +36,10 @@
     "Status": {
       "type": "boolean",
       "default": false
+    },
+    "Date": {
+      "type": "date"
+    
     }
   }
 }

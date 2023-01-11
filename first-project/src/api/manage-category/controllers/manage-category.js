@@ -8,6 +8,7 @@ const { createCoreController } = require('@strapi/strapi').factories;
 
 module.exports = createCoreController('api::manage-category.manage-category', ({ strapi }) => ({
     async create(ctx) {
+       
         const response = await super.create(ctx);
         return response;
     },
@@ -25,19 +26,32 @@ module.exports = createCoreController('api::manage-category.manage-category', ({
 
         return this.transformResponse(sanitizedEntity);
     },
+    async findMany(ctx) {
+        let findCategory= strapi.query('api::manage-category.manage-category').findMany(
+            {
+                select: ['id', 'CatName'],
+            
+            }
+        );
+
+        return findCategory
+    },
     async fetchAll(ctx) {
-        let a = strapi.query('api::manage-category.manage-category').findMany(
+        let findCategory = strapi.query('api::manage-category.manage-category').findMany(
             {
                 select: ['id', 'CatName'],
                 populate: {
                     AppId: {
                         select: ['id']
+                    },
+                    Logo: {
+                        select: ['url'],
                     }
                 }
             }
         );
 
-        return a
+        return findCategory
     },
     async update(ctx) {
 
@@ -47,6 +61,6 @@ module.exports = createCoreController('api::manage-category.manage-category', ({
     async delete(ctx) {
         const response = await super.delete(ctx);
         return response;
-    }
+    },
 
 }))

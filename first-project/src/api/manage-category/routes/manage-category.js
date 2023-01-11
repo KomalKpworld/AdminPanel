@@ -43,8 +43,14 @@ module.exports = {
         },
         { // Path defined with an URL parameter
             method: 'GET',
-            path: '/commonCategory',
+            path: '/categorySelected',
             handler: 'manage-category.fetchAll',
+            policies: []
+        },
+        { // Path defined with an URL parameter
+            method: 'GET',
+            path: '/commonCategory',
+            handler: 'manage-category.findMany',
             policies: []
         },
     ]

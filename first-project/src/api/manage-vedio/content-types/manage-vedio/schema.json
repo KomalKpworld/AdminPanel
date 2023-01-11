@@ -9,7 +9,14 @@
   },
   "options": {
     "draftAndPublish": true,
-    "populateCreatorFields": true
+    "populateCreatorFields": true,
+    "privateAttributes": [
+      "createdAt",
+      "updatedAt",
+      "publishedAt",
+      "createdBy",
+      "updatedBy"
+    ]
   },
   "pluginOptions": {},
   "attributes": {
@@ -24,7 +31,7 @@
     "Zip": {
       "type": "media",
       "multiple": false,
-      "required": true,
+      "required": false,
       "allowedTypes": [
         "files"
       ]
@@ -74,6 +81,11 @@
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::manage-app.manage-app"
+    },
+    "Date": {
+      "type": "date",
+      "required": true,
+      "default": "2023-01-11"
     }
   }
 }
