@@ -149,24 +149,39 @@ module.exports = createCoreController(
 
     async findByDate(ctx) {
 
-     let response = await strapi.query('api::manage-vedio.manage-vedio').
-     
-  findMany({ where: {
-    AppId: ctx.request.body.data.AppId,
-    Date: ctx.request.body.data.Date,
-  },
-  
-    select: ['AddedBy'] ,
-    populate:{
-      AppId:{
-      select:['AppName']
+      let response = await strapi.query('api::manage-vedio.manage-vedio').
+
+        findMany({
+          where: {
+            AppId: ctx.request.body.data.AppId,
+            Date: ctx.request.body.data.Date,
+          }, 
+          select: ['AddedBy'],
+        },)
+      let user = []
+      for (let i = 0; i < response.length; i++) {
+        let user1 = await strapi.query('api::manage-vedio.manage-vedio').
+
+          findWithCount({
+            where: {
+              AppId: ctx.request.body.data.AppId,
+              Date: ctx.request.body.data.Date,
+              AddedBy: response[i].AddedBy
+            },
+
+            select: ['AddedBy'],
+            populate: {
+              AppId: {
+                select: ['AppName']
+              }
+            }
+          },)
+        user.push(user1)
+
       }
-      },
- },)//.count();
-return [response , response.length]
-}
+      return user.flat()
 
-
-
-
+    }
   }))
+
+
