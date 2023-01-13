@@ -31,7 +31,28 @@ module.exports = createCoreController(
         },
       })
       // some logic
+      var findApp = await strapi.db
+        .query("api::manage-app.manage-app")
+        .findMany({
+          where: {
+            id: ctx.request.body.data.AppId,
+          },
+        });
+      if (findApp) {
+        for (let i = 0; i < findApp.length; i++) {
 
+          const updateVideoCount = await strapi.db
+            .query("api::manage-app.manage-app")
+            .update({
+              where: {
+                id: findApp[i].id,
+              },
+              data: {
+                Count: findApp[i].Count + 1,
+              },
+            });
+        }
+      }
       //const response = await super.create(ctx);
       var findCategory = await strapi.db
         .query("api::manage-category.manage-category")
@@ -72,9 +93,11 @@ module.exports = createCoreController(
           .update({
             where: {
               UserName: id,
+
             },
             data: {
               VedioCount: count + 1,
+
             },
           });
       } else {
@@ -83,6 +106,7 @@ module.exports = createCoreController(
           data: {
             UserName: ctx.state.user.username,
             VedioCount: 1,
+
           },
         });
       }
@@ -155,7 +179,7 @@ module.exports = createCoreController(
           where: {
             AppId: ctx.request.body.data.AppId,
             Date: ctx.request.body.data.Date,
-          }, 
+          },
           select: ['AddedBy'],
         },)
       let user = []
@@ -170,18 +194,120 @@ module.exports = createCoreController(
             },
 
             select: ['AddedBy'],
-            populate: {
-              AppId: {
-                select: ['AppName']
-              }
-            }
+            // populate: {
+            //   AppId: {
+            //     select: ['AppName']
+            //   }
+            // }
           },)
         user.push(user1)
 
       }
       return user.flat()
 
+    },
+    async getAllAppByDate(ctx) {
+
+      let response = await strapi.query('api::manage-vedio.manage-vedio').
+
+        findMany({
+          where: {
+            Date: ctx.request.body.data.Date,
+          },
+          select: ['AddedBy'],
+          populate: {
+            AppId: {
+              select: ['Count']
+            }
+          }
+        },)
+      var date1 = ctx.request.body.data.Date
+      var appid = ctx.request.body.data.AppId
+      let GetByCOunt = await strapi.db.connection.raw(`SELECT added_by as userName ,  a.app_name,
+      COUNT(CASE WHEN va.manage_app_id = a.id THEN a.count ELSE null END) AS Total
+      FROM manage_vedios as v
+      INNER JOIN 
+          manage_vedios_app_id_links as va
+           ON v.id = va.manage_vedio_id
+          INNER JOIN manage_apps as a
+           ON va.manage_app_id= a.id 
+           WHERE v.date = "${date1}" AND a.id ="${appid}"
+      
+           Group BY v.added_by ,a.app_name`)
+      
+      let getallApp = await strapi.db.connection.raw(`SELECT added_by as userName ,  a.app_name,
+      COUNT(CASE WHEN va.manage_app_id = a.id THEN a.count ELSE null END) AS Total
+      FROM manage_vedios as v
+      INNER JOIN 
+          manage_vedios_app_id_links as va
+           ON v.id = va.manage_vedio_id
+          INNER JOIN manage_apps as a
+           ON va.manage_app_id= a.id 
+           WHERE v.date = "${date1}" AND a.id ="${appid}"
+      
+           Group BY v.added_by ,a.app_name`)
+     
+
+      return response
+
+
     }
+
+
+
+
   }))
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  // UNPIVOT
+      // (
+      //        SalesAmount
+      //        FOR [Year] IN ([2005], [2006], [2007], [2008])
+      // ) AS P
+  //     let appid = ctx.request.body.data.AppId
+
+  //     let d = await strapi.db.connection.raw(
+  //       `SELECT v.added_by as "username" 
+
+  //       FROM manage_vedios as v  
+  //       INNER JOIN 
+  //        manage_vedios_app_id_links as va
+  //         ON v.id = va.manage_vedio_id
+  //          INNER JOIN manage_apps as a 
+  //          ON va.manage_app_id= a.id
+  //          GROUP BY v.added_by `
+  //     )
+
+
+  //     let user = await strapi.db.connection.raw(`SELECT a.username, p.count
+
+  //   FROM up_users as a, manage_apps as p, manage_vedios as v  , manage_vedios_app_id_links as va
+  //   WHERE a.username = v.added_by AND p.status= 1
+  //  GROUP BY a.username ,
+  //       p.count   `)
+
+
+  //     return response
+
+
+  

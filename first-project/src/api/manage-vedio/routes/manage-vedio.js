@@ -17,6 +17,12 @@ module.exports = {
       },
       { // Path defined with an URL parameter
         method: 'POST',
+        path: '/manage-vedio/getAllAppByDate', 
+        handler: 'manage-vedio.getAllAppByDate',
+        policies: []
+      },
+      { // Path defined with an URL parameter
+        method: 'POST',
         path: '/manage-vedio/Get', 
         handler: 'manage-vedio.findByDate',
         policies: []

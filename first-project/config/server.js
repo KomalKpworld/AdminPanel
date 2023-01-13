@@ -15,7 +15,7 @@ module.exports = ({ env }) => ({
 // sgMail
 //   .send(mailOptions)
 //   .then(() => {
-//     console.log('Email sent')
+
 //   })
 //   .catch((error) => {
 //     console.error(error)

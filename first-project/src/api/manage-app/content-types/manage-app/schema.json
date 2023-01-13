@@ -39,7 +39,9 @@
     },
     "Date": {
       "type": "date"
-    
+    },
+    "Count": {
+      "type": "integer"
     }
   }
 }

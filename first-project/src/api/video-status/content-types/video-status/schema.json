@@ -10,7 +10,13 @@
   "options": {
     "draftAndPublish": true,
     "populateCreatorFields": true,
-    "privateAttributes":["createdAt", "updatedAt","publishedAt", "createdBy", "updatedBy"]
+    "privateAttributes": [
+      "createdAt",
+      "updatedAt",
+      "publishedAt",
+      "createdBy",
+      "updatedBy"
+    ]
   },
   "pluginOptions": {},
   "attributes": {
@@ -20,6 +26,11 @@
     },
     "UserName": {
       "type": "string"
+    },
+    "AppId": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::manage-app.manage-app"
     }
   }
 }
