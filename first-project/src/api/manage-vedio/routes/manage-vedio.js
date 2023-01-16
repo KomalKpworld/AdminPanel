@@ -23,6 +23,12 @@ module.exports = {
       },
       { // Path defined with an URL parameter
         method: 'POST',
+        path: '/manage-vedio/dashBoardByDate', 
+        handler: 'manage-vedio.dashboardByDate',
+        policies: []
+      },
+      { // Path defined with an URL parameter
+        method: 'POST',
         path: '/manage-vedio/Get', 
         handler: 'manage-vedio.findByDate',
         policies: []

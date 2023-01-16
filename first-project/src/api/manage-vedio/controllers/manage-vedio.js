@@ -236,21 +236,7 @@ module.exports = createCoreController(
       
            Group BY  added_by`)
 console.log(getDashboardbyIdAndDate[0])
-      let getallAppByDate = await strapi.db.connection.raw(`SELECT added_by as userName ,  a.app_name,
-      COUNT(CASE WHEN va.manage_app_id = a.id THEN a.count ELSE null END) AS Total
-      FROM manage_vedios as v
-      INNER JOIN 
-          manage_vedios_app_id_links as va
-           ON v.id = va.manage_vedio_id
-          INNER JOIN manage_apps as a
-           ON va.manage_app_id= a.id 
-           WHERE v.date = "${date1}"
-      
-           Group BY v.added_by ,a.app_name`)
-
-
-console.log(getallAppByDate [0])
-
+  
       return response
     },
     async dashboardStatus(ctx){
@@ -270,6 +256,21 @@ console.log(getallAppByDate [0])
       let InActiveVideos = findDeActiveStatus.length
       let totalvideo = findVideoActiveStatus.length + findDeActiveStatus.length
       return {data:{totalUser: totalUser, ActiveVideos: ActiveVideos, InActiveVideos: InActiveVideos, totalvideo: totalvideo} }
+    },
+
+    async dashboardByDate(ctx) {
+      var date = ctx.request.body.data.Date
+      let getallAppByDate = await strapi.db.connection.raw(`SELECT added_by as userName ,  a.app_name,
+      COUNT(CASE WHEN va.manage_app_id = a.id THEN a.count ELSE null END) AS Total
+      FROM manage_vedios as v
+      INNER JOIN 
+          manage_vedios_app_id_links as va
+           ON v.id = va.manage_vedio_id
+          INNER JOIN manage_apps as a
+           ON va.manage_app_id= a.id
+           WHERE v.date = "${date}"
+          Group BY v.added_by ,a.app_name`)
+      return getallAppByDate[0]
     }
 
 
