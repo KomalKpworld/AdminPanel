@@ -30,7 +30,7 @@ module.exports = createCoreController(
           VedioCount: 1,
         },
       })
-      // some logic
+    
       var findApp = await strapi.db
         .query("api::manage-app.manage-app")
         .findMany({
@@ -40,7 +40,6 @@ module.exports = createCoreController(
         });
       if (findApp) {
         for (let i = 0; i < findApp.length; i++) {
-
           const updateVideoCount = await strapi.db
             .query("api::manage-app.manage-app")
             .update({
@@ -63,7 +62,6 @@ module.exports = createCoreController(
         });
       if (findCategory) {
         for (let i = 0; i < findCategory.length; i++) {
-
           const updateVideoCount = await strapi.db
             .query("api::manage-category.manage-category")
             .update({
@@ -83,57 +81,44 @@ module.exports = createCoreController(
             UserName: id,
           },
         });
-
-
       if (entries) {
         var count = entries.VedioCount;
-
         const updateVideo = await strapi.db
           .query("api::video-status.video-status")
           .update({
             where: {
               UserName: id,
-
             },
             data: {
               VedioCount: count + 1,
-
             },
           });
       } else {
-
         strapi.entityService.create("api::video-status.video-status", {
           data: {
             UserName: ctx.state.user.username,
             VedioCount: 1,
-
           },
         });
       }
-
       return response;
     },
-
     async update(ctx) {
-
       const response = await super.update(ctx);
       return response;
     },
     async delete(ctx) {
-
       const response = await super.delete(ctx);
       return response;
-    }
-
-    ,
+    },
     async find(ctx) {
-
       ctx.query = { ...ctx.query, local: 'en' };
       const { data, meta } = await super.find(ctx);
       meta.date = Date.now();
       return { data, meta };
     },
     async findOne(ctx) {
+      console.log("4")
       const { id } = ctx.params;
       const { query } = ctx;
       const entity = await strapi.service('api::manage-vedio.manage-vedio').findOne(id, query);
@@ -141,105 +126,32 @@ module.exports = createCoreController(
       return this.transformResponse(sanitizedEntity);
     },
     async findMany(ctx) {
-      let findVedio = strapi.query('api::manage-vedio.manage-vedio').findMany(
-
-        {
-          select: ['id', 'VideoName', 'NotificationDescription', 'TotalImage', 'Status', 'AddedBy', 'VideoResolution'],
-          populate: {
-            AppId: {
-              select: ['id']
-            },
-            CId: {
-              select: ['id']
-            },
-            Zip: {
-              select: ['url']
-            },
-            VideoThumbnail: {
-              select: ['url']
-            },
-            PreviewVideo: {
-              select: ['url']
-            },
-            NotificationImage: {
-              select: ['url']
-            }
+      let findVedio = strapi.query('api::manage-vedio.manage-vedio').findMany({
+        select: ['id', 'VideoName', 'NotificationDescription', 'TotalImage', 'Status', 'AddedBy', 'VideoResolution'],
+        populate: {
+          AppId: {
+            select: ['id']
+          },
+          CId: {
+            select: ['id']
+          },
+          Zip: {
+            select: ['url']
+          },
+          VideoThumbnail: {
+            select: ['url']
+          },
+          PreviewVideo: {
+            select: ['url']
+          },
+          NotificationImage: {
+            select: ['url']
           }
         }
-      );
-
+      });
       return findVedio
     },
-
-    async findByDate(ctx) {
-
-      let response = await strapi.query('api::manage-vedio.manage-vedio').
-
-        findMany({
-          where: {
-            AppId: ctx.request.body.data.AppId,
-            Date: ctx.request.body.data.Date,
-          },
-          select: ['AddedBy'],
-        },)
-      let user = []
-      for (let i = 0; i < response.length; i++) {
-        let user1 = await strapi.query('api::manage-vedio.manage-vedio').
-
-          findWithCount({
-            where: {
-              AppId: ctx.request.body.data.AppId,
-              Date: ctx.request.body.data.Date,
-              AddedBy: response[i].AddedBy
-            },
-
-            select: ['AddedBy'],
-            // populate: {
-            //   AppId: {
-            //     select: ['AppName']
-            //   }
-            // }
-          },)
-        user.push(user1)
-
-      }
-      return user.flat()
-
-    },
-    async getAllAppByDate(ctx) {
-
-      let response = await strapi.query('api::manage-vedio.manage-vedio').
-
-        findMany({
-          where: {
-            Date: ctx.request.body.data.Date,
-          },
-          select: ['AddedBy'],
-          populate: {
-            AppId: {
-              select: ['Count']
-            }
-          }
-        },)
-      var date1 = ctx.request.body.data.Date
-      var appid = ctx.request.body.data.AppId
- 
-      let getDashboardbyIdAndDate = await strapi.db.connection.raw(`SELECT added_by as userName ,  a.app_name,
-      COUNT(CASE WHEN va.manage_app_id = a.id THEN a.count ELSE null END) AS Total
-      FROM manage_vedios as v
-      INNER JOIN 
-          manage_vedios_app_id_links as va
-           ON v.id = va.manage_vedio_id
-          INNER JOIN manage_apps as a
-           ON va.manage_app_id= a.id 
-           WHERE v.date = "${date1}" AND a.id ="${appid}"
-      
-           Group BY  added_by`)
-console.log(getDashboardbyIdAndDate[0])
-  
-      return response
-    },
-    async dashboardStatus(ctx){
+    async dashBoardStatus(){
       let findUser = await strapi.query('plugin::users-permissions.user').findMany({})
       let findVideoActiveStatus = await strapi.query('api::manage-vedio.manage-vedio').findMany({
         where: {
@@ -255,12 +167,26 @@ console.log(getDashboardbyIdAndDate[0])
       let ActiveVideos = findVideoActiveStatus.length
       let InActiveVideos = findDeActiveStatus.length
       let totalvideo = findVideoActiveStatus.length + findDeActiveStatus.length
-      return {data:{totalUser: totalUser, ActiveVideos: ActiveVideos, InActiveVideos: InActiveVideos, totalvideo: totalvideo} }
+     return {data:{totalUser: totalUser, ActiveVideos: ActiveVideos, InActiveVideos: InActiveVideos, totalvideo: totalvideo} }
     },
-
+    async dashboardByDateAndApp(ctx) {
+      var date1 = ctx.request.body.data.Date
+      var appid = ctx.request.body.data.AppId
+      let getDashboardbyIdAndDate = await strapi.db.connection.raw(`SELECT added_by as userName , a.app_name,
+      COUNT(CASE WHEN va.manage_app_id = a.id THEN a.count ELSE null END) AS Total
+      FROM manage_vedios as v
+      INNER JOIN 
+          manage_vedios_app_id_links as va
+           ON v.id = va.manage_vedio_id
+          INNER JOIN manage_apps as a
+           ON va.manage_app_id= a.id 
+           WHERE v.date = "${date1}" AND a.id ="${appid}"
+           Group BY  added_by`)
+      return getDashboardbyIdAndDate[0]
+    },
     async dashboardByDate(ctx) {
       var date = ctx.request.body.data.Date
-      let getallAppByDate = await strapi.db.connection.raw(`SELECT added_by as userName ,  a.app_name,
+      let getallAppByDate = await strapi.db.connection.raw(`SELECT added_by as userName , a.app_name,
       COUNT(CASE WHEN va.manage_app_id = a.id THEN a.count ELSE null END) AS Total
       FROM manage_vedios as v
       INNER JOIN 
@@ -272,9 +198,7 @@ console.log(getDashboardbyIdAndDate[0])
           Group BY v.added_by ,a.app_name`)
       return getallAppByDate[0]
     }
-
-
-  }))
+}))
 
 
 
