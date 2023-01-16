@@ -26,11 +26,6 @@
     },
     "UserName": {
       "type": "string"
-    },
-    "AppId": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::manage-app.manage-app"
     }
   }
 }

@@ -223,7 +223,8 @@ module.exports = createCoreController(
         },)
       var date1 = ctx.request.body.data.Date
       var appid = ctx.request.body.data.AppId
-      let GetByCOunt = await strapi.db.connection.raw(`SELECT added_by as userName ,  a.app_name,
+ 
+      let getDashboardbyIdAndDate = await strapi.db.connection.raw(`SELECT added_by as userName ,  a.app_name,
       COUNT(CASE WHEN va.manage_app_id = a.id THEN a.count ELSE null END) AS Total
       FROM manage_vedios as v
       INNER JOIN 
@@ -233,9 +234,9 @@ module.exports = createCoreController(
            ON va.manage_app_id= a.id 
            WHERE v.date = "${date1}" AND a.id ="${appid}"
       
-           Group BY v.added_by ,a.app_name`)
-      
-      let getallApp = await strapi.db.connection.raw(`SELECT added_by as userName ,  a.app_name,
+           Group BY  added_by`)
+console.log(getDashboardbyIdAndDate[0])
+      let getallAppByDate = await strapi.db.connection.raw(`SELECT added_by as userName ,  a.app_name,
       COUNT(CASE WHEN va.manage_app_id = a.id THEN a.count ELSE null END) AS Total
       FROM manage_vedios as v
       INNER JOIN 
@@ -243,17 +244,33 @@ module.exports = createCoreController(
            ON v.id = va.manage_vedio_id
           INNER JOIN manage_apps as a
            ON va.manage_app_id= a.id 
-           WHERE v.date = "${date1}" AND a.id ="${appid}"
+           WHERE v.date = "${date1}"
       
            Group BY v.added_by ,a.app_name`)
-     
+
+
+console.log(getallAppByDate [0])
 
       return response
-
-
+    },
+    async dashboardStatus(ctx){
+      let findUser = await strapi.query('plugin::users-permissions.user').findMany({})
+      let findVideoActiveStatus = await strapi.query('api::manage-vedio.manage-vedio').findMany({
+        where: {
+          Status: true
+        }
+      })
+      let findDeActiveStatus = await strapi.query('api::manage-vedio.manage-vedio').findMany({
+        where: {
+          Status: false
+        }
+      })
+      let totalUser = findUser.length
+      let ActiveVideos = findVideoActiveStatus.length
+      let InActiveVideos = findDeActiveStatus.length
+      let totalvideo = findVideoActiveStatus.length + findDeActiveStatus.length
+      return {data:{totalUser: totalUser, ActiveVideos: ActiveVideos, InActiveVideos: InActiveVideos, totalvideo: totalvideo} }
     }
-
-
 
 
   }))

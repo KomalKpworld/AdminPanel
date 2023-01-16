@@ -33,6 +33,12 @@ module.exports = {
         handler: 'manage-vedio.find',
         policies: []
       },
+      { // Path defined with a regular expression
+        method: 'GET',
+        path: '/manage-vedio/dashboardStatus', 
+        handler: 'manage-vedio.dashboardStatus',
+        policies: []
+      },
       
       { // Path defined with a regular expression
         method: 'GET',
